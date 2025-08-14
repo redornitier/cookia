@@ -1,1 +1,2 @@
 mlc4j/output/arm64-v8a/libtvm4j_runtime_packed.so filter=lfs diff=lfs merge=lfs -text
+app/src/main/assets/models/* filter=lfs diff=lfs merge=lfs -text
