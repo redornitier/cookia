@@ -78,13 +78,7 @@ dependencies {
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
 
-    implementation(platform(libs.androidx.compose.bom.v20250800))
-    implementation(libs.ui)
-    implementation(libs.material3)
-    implementation(libs.androidx.activity.compose.v1101)
-
     implementation(libs.androidx.lifecycle.viewmodel.ktx)
-    implementation(libs.androidx.lifecycle.runtime.ktx.v292)
     implementation(libs.androidx.lifecycle.viewmodel.compose)
 
     implementation(libs.kotlinx.coroutines.android)
