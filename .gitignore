@@ -13,3 +13,4 @@
 .externalNativeBuild
 .cxx
 local.properties
+mlc4j/build
