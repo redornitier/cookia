@@ -37,8 +37,6 @@ public class JSONFFIEngine {
     }
 
     public void initBackgroundEngine(KotlinFunction callback) {
-        Device device = Device.opencl();
-
         requestStreamCallback = Function.convertFunc(new Function.Callback() {
             @Override
             public Object invoke(TVMValue... args) {
@@ -48,8 +46,22 @@ public class JSONFFIEngine {
             }
         });
 
-        initBackgroundEngineFunc.pushArg(device.deviceType).pushArg(device.deviceId).pushArg(requestStreamCallback)
-                .invoke();
+        try {
+            Device vulkan = Device.vulkan();
+            initBackgroundEngineFunc
+                    .pushArg(vulkan.deviceType)
+                    .pushArg(vulkan.deviceId)
+                    .pushArg(requestStreamCallback)
+                    .invoke();
+        } catch (Throwable t) {
+            Log.w("JSONFFIEngine", "Vulkan not available, falling back to CPU", t);
+            Device cpu = Device.cpu();
+            initBackgroundEngineFunc
+                    .pushArg(cpu.deviceType)
+                    .pushArg(cpu.deviceId)
+                    .pushArg(requestStreamCallback)
+                    .invoke();
+        }
     }
 
     public void reload(String engineConfigJSONStr) {

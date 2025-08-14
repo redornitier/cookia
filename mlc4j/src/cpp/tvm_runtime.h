@@ -21,9 +21,6 @@
 #include <runtime/module.cc>
 #include <runtime/ndarray.cc>
 #include <runtime/nvtx.cc>
-#include <runtime/opencl/opencl_device_api.cc>
-#include <runtime/opencl/opencl_module.cc>
-#include <runtime/opencl/opencl_wrapper/opencl_wrapper.cc>
 #include <runtime/profiling.cc>
 #include <runtime/source_utils.cc>
 #include <runtime/system_library.cc>
