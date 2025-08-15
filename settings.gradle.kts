@@ -22,5 +22,5 @@ dependencyResolutionManagement {
 rootProject.name = "Cookia"
 include(":app")
 include(":mlc4j")
-project(":mlc4j").projectDir = file("mlc4j") // ajusta la ruta real al 'dist/lib/mlc4j'
+project(":mlc4j").projectDir = file("dist/lib/mlc4j") // ajusta la ruta real al 'dist/lib/mlc4j'
 
