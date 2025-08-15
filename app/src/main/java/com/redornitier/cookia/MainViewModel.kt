@@ -121,25 +121,60 @@ class MainViewModel : ViewModel() {
         }
     }
 
-    /** Intenta llamar a app.engine.<method>(ChatCompletionRequest) con varios nombres comunes. */
-    private fun invokeChatCompletions(app: App, req: OpenAIProtocol.ChatCompletionRequest): Any {
-        val engine = app.engine
-        val klass = engine.javaClass
-        val candidates = listOf(
-            "chatCompletions",        // algunas builds
-            "chatCompletionsCreate",  // espejo de iOS/web: engine.chat.completions.create
-            "createChatCompletions"   // otras builds
+    /**
+     * Ejecuta una solicitud de chat completions usando la API real de MLCEngine.
+     *
+     * Las versiones modernas del engine sólo exponen llamadas de *streaming*,
+     * por lo que aquí consumimos el canal y reconstruimos un objeto de
+     * `ChatCompletionStreamResponse` con el texto completo. Así evitamos el uso
+     * de reflexión (que fallaba y provocaba un crash) y devolvemos un resultado
+     * compatible con `extractFirstText`.
+     */
+    private suspend fun invokeChatCompletions(
+        app: App,
+        req: OpenAIProtocol.ChatCompletionRequest
+    ): OpenAIProtocol.ChatCompletionStreamResponse {
+        // Forzamos stream=true ya que la implementación de MLCEngine únicamente
+        // admite modo streaming.
+        val streamReq = req.copy(
+            stream = true,
+            stream_options = OpenAIProtocol.StreamOptions(include_usage = true)
         )
-        var lastErr: Throwable? = null
-        for (name in candidates) {
-            try {
-                val m = klass.getMethod(name, req.javaClass)
-                return m.invoke(engine, req)!!
-            } catch (t: Throwable) {
-                lastErr = t
+
+        val channel = app.engine.chat.completions.create(streamReq)
+        val fullText = StringBuilder()
+        var last: OpenAIProtocol.ChatCompletionStreamResponse? = null
+
+        for (chunk in channel) {
+            // Extraemos el delta de texto, si lo hay, y lo acumulamos.
+            val choice = chunk.choices.firstOrNull()
+            val delta = choice?.delta?.content?.asText()
+            if (!delta.isNullOrEmpty()) {
+                fullText.append(delta)
             }
+            last = chunk
         }
-        throw NoSuchMethodError("No encontré método chat completions en MLCEngine (${candidates.joinToString()}). Causa: ${lastErr?.message}")
+
+        // Construimos una respuesta final con el texto completo acumulado.
+        val message = OpenAIProtocol.ChatCompletionMessage(
+            role = OpenAIProtocol.ChatCompletionRole.assistant,
+            content = fullText.toString()
+        )
+        val choice = OpenAIProtocol.ChatCompletionStreamResponseChoice(
+            index = 0,
+            delta = message,
+            finish_reason = last?.choices?.firstOrNull()?.finish_reason
+        )
+
+        return OpenAIProtocol.ChatCompletionStreamResponse(
+            id = last?.id ?: "",
+            choices = listOf(choice),
+            created = last?.created,
+            model = last?.model,
+            system_fingerprint = last?.system_fingerprint ?: "",
+            `object` = last?.`object`,
+            usage = last?.usage
+        )
     }
 
     /** Extrae texto del response (message.content o delta.content). */
