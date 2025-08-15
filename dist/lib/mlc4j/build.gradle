@@ -1,7 +1,9 @@
 plugins {
     id 'com.android.library'
     id 'org.jetbrains.kotlin.android'
-    id 'org.jetbrains.kotlin.plugin.serialization' version '1.8.0'
+    // Use the same Kotlin Serialization plugin version as the Kotlin compiler
+    // to ensure serializers are generated correctly at build time.
+    id 'org.jetbrains.kotlin.plugin.serialization' version '2.0.21'
 }
 
 android {
