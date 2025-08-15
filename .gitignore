@@ -14,3 +14,4 @@
 .cxx
 local.properties
 mlc4j/build
+dist/lib/mlc4j/build
