@@ -15,7 +15,7 @@ import java.io.BufferedReader
 import java.io.InputStreamReader
 
 data class UiState(
-    val modelId: String = "qwen2-1_5b-q4f16_1",
+    val modelId: String = "Qwen2-1.5B-Instruct-q4f16_1-MLC",
     val installing: Boolean = false,
     val installProgress: InstallProgress? = null,
     val installError: String? = null,

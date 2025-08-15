@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools">
+    xmlns:tools="http://schemas.android.com/tools"
+    package="com.redornitier.cookia">
 
     <application
-        android:name=".App"
+        android:name="com.redornitier.cookia.App"
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
@@ -11,7 +12,11 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/Theme.Cookia">
+        android:theme="@style/Theme.Cookia"
+        tools:targetApi="31">
+        <uses-native-library
+            android:name="libOpenCL.so"
+            android:required="false"/>
         <activity
             android:name=".MainActivity"
             android:exported="true"

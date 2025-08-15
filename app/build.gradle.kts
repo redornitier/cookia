@@ -10,7 +10,7 @@ android {
 
     defaultConfig {
         applicationId = "com.redornitier.cookia"
-        minSdk = 34
+        minSdk = 24
         targetSdk = 36
         versionCode = 1
         versionName = "1.0"
@@ -62,6 +62,7 @@ android {
 
 dependencies {
 
+    implementation(project(":mlc4j"))
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)
@@ -82,6 +83,5 @@ dependencies {
     implementation(libs.androidx.lifecycle.viewmodel.compose)
 
     implementation(libs.kotlinx.coroutines.android)
-    implementation(project(":mlc4j"))
 
 }
