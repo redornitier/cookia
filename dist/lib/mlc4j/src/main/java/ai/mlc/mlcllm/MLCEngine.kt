@@ -26,6 +26,8 @@ class MLCEngine {
     private val state: EngineState
     private val jsonFFIEngine: JSONFFIEngine
     val chat: Chat
+    val driver: String
+        get() = jsonFFIEngine.driverType
     private val threads = mutableListOf<BackgroundWorker>()
 
     init {

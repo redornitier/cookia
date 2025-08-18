@@ -33,6 +33,7 @@ class MainActivity : ComponentActivity() {
             MaterialTheme {
                 val ui by vm.ui.collectAsState()
                 var prompt by remember { mutableStateOf("Dame una galleta absurda sobre baterías 🔋🍪") }
+                val driver = remember { app.engine.driver }
 
                 Scaffold(
                     topBar = { CenterAlignedTopAppBar(title = { Text("BatteryCookie — MLC") }) }
@@ -46,6 +47,7 @@ class MainActivity : ComponentActivity() {
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
                         Text("Modelo: ${ui.modelId}", style = MaterialTheme.typography.titleMedium)
+                        Text("Driver: $driver")
 
                         Button(
                             onClick = { vm.installModel(applicationContext) },
