@@ -19,6 +19,7 @@ public class JSONFFIEngine {
     private Function runBackgroundStreamBackLoopFunc;
     private Function exitBackgroundLoopFunc;
     private Function requestStreamCallback;
+    private String driverType = "unknown";
 
     public JSONFFIEngine() {
         Function createFunc = Function.getFunction("mlc.json_ffi.CreateJSONFFIEngine");
@@ -37,7 +38,14 @@ public class JSONFFIEngine {
     }
 
     public void initBackgroundEngine(KotlinFunction callback) {
-        Device device = Device.opencl();
+        Device device;
+        try {
+            device = Device.opencl();
+            driverType = "GPU (OpenCL)";
+        } catch (Throwable t) {
+            device = Device.cpu();
+            driverType = "CPU";
+        }
 
         requestStreamCallback = Function.convertFunc(new Function.Callback() {
             @Override
@@ -50,6 +58,10 @@ public class JSONFFIEngine {
 
         initBackgroundEngineFunc.pushArg(device.deviceType).pushArg(device.deviceId).pushArg(requestStreamCallback)
                 .invoke();
+    }
+
+    public String getDriverType() {
+        return driverType;
     }
 
     public void reload(String engineConfigJSONStr) {
